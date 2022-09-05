@@ -1,0 +1,9 @@
+Light algorithm
+  Needs to check for crossing lines
+  Needs to check for equidistant points and fork out to heavy
+  Needs a general refactor/cleanup
+
+Heavy algorithm
+  Needs to be done at all
+
+A double diamond test
