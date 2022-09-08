@@ -1,7 +1,5 @@
 Light algorithm
-  Needs to check for crossing lines
-  Needs to check for equidistant points and fork out to heavy
-  Needs a general refactor/cleanup
+  Needs to check for equidistant points and fork (for loop) them
 
 Heavy algorithm
   Needs to be done at all
