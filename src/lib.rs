@@ -20,15 +20,25 @@ impl Float {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-struct Connection(Option<Point>, Option<Point>);
+pub struct Connection(Option<Point>, Option<Point>);
 
-pub struct Shape {}
+pub struct Shape {
+    map: HashMap<Point, Connection>,
+    list: Vec<Point>,
+    points: Vec<Point>,
+}
 impl Shape {
-    pub fn new() -> Shape {
-        Shape{}
+    pub fn new(map: HashMap<Point, Connection>, list: Vec<Point>, points: Vec<Point>,) -> Shape {
+        Shape{
+            map: map,
+            list: list,
+            points: points,
+        }
     }
 
-    // fn calc() -> Option<Vec<Point>> {}
+    fn calc(&mut self) -> Option<Vec<Point>> {
+        self.light_algo(None, self.map.clone(), self.list.clone(), self.points.clone())
+    }
 
     fn light_algo(
         &mut self,
@@ -153,6 +163,8 @@ impl Shape {
     // fn heavy_algo(&self) -> Option<Vec<Point>> {}
 }
 
+// fn run() {}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -207,10 +219,10 @@ mod tests {
             Point(0, -2),
             Point(-5, 0)
         ];
-        let mut shape = Shape::new();
+        let mut shape = Shape::new(HashMap::new(), vec![], v);
 
 
-        match shape.light_algo(None, HashMap::new(), vec![], v) {
+        match shape.calc() {
             Some(n) => n,
             None => panic!("Nothing returned")
         };
@@ -224,10 +236,10 @@ mod tests {
             Point(1, -3),
             Point(-3, 0),
         ];
-        let mut shape = Shape::new();
+        let mut shape = Shape::new(HashMap::new(), vec![], v);
 
 
-        let shape = match shape.light_algo(None, HashMap::new(), vec![], v) {
+        let shape = match shape.calc() {
             Some(n) => n,
             None => panic!("Nothing returned")
         };
@@ -251,10 +263,10 @@ mod tests {
             Point(1, 1),
             Point(3, 0),
         ];
-        let mut shape = Shape::new();
+        let mut shape = Shape::new(HashMap::new(), vec![], v);
 
 
-        match shape.light_algo(None, HashMap::new(), vec![], v) {
+        match shape.calc() {
             Some(n) => n,
             None => panic!("Nothing returned")
         };
@@ -272,10 +284,10 @@ mod tests {
             Point(3, 0),
             Point(0, 0),
         ];
-        let mut shape = Shape::new();
+        let mut shape = Shape::new(HashMap::new(), vec![], v);
 
 
-        let shape = match shape.light_algo(None, HashMap::new(), vec![], v) {
+        let shape = match shape.calc() {
             Some(n) => n,
             None => panic!("Nothing returned")
         };
