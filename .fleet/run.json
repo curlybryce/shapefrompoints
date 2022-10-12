@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "type": "cargo",
+            "name": "test",
+            "executableArgs": ["test"],
+        },
+        {
+            "type": "cargo",
+            "name": "fmt",
+            "executableArgs": ["fmt"],
+        },
+        {
+            "type": "cargo",
+            "name": "build",
+            "executableArgs": ["build"],
+            "dependsOn": ["test"],
+        },
+        {
+            "type": "cargo",
+            "name": "run",
+            "executableArgs": ["run"],
+            "dependsOn": ["build"],
+        },
+    ]
+}

@@ -12,10 +12,7 @@ impl Point {
 struct Float(isize, usize);
 impl Float {
     pub fn from(f: f32) -> Float {
-        Float(
-            f as isize,
-            (f.fract() * 1000000.0) as usize,
-        )
+        Float(f as isize, (f.fract() * 1000000.0) as usize)
     }
 }
 
@@ -28,8 +25,8 @@ pub struct Shape {
     points: Vec<Point>,
 }
 impl Shape {
-    pub fn new(map: HashMap<Point, Connection>, list: Vec<Point>, points: Vec<Point>,) -> Shape {
-        Shape{
+    pub fn new(map: HashMap<Point, Connection>, list: Vec<Point>, points: Vec<Point>) -> Shape {
+        Shape {
             map: map,
             list: list,
             points: points,
@@ -37,7 +34,12 @@ impl Shape {
     }
 
     fn calc(&mut self) -> Option<Vec<Point>> {
-        self.light_algo(None, self.map.clone(), self.list.clone(), self.points.clone())
+        self.light_algo(
+            None,
+            self.map.clone(),
+            self.list.clone(),
+            self.points.clone(),
+        )
     }
 
     fn light_algo(
@@ -51,25 +53,29 @@ impl Shape {
         let p;
         if list.len() == 0 {
             match points.pop() {
-                Some(n) => {list.push(n); points.push(n); p = n},
-                None => return None
+                Some(n) => {
+                    list.push(n);
+                    points.push(n);
+                    p = n
+                }
+                None => return None,
             };
         } else {
             match list.pop() {
                 Some(n) => {
                     list.push(n);
                     p = n
-                },
-                None => return None
+                }
+                None => return None,
             }
         };
-                
+
         // Create and sort a vec of (f32, Point)
         // Closest to farthest point
         let mut vec: Vec<(Float, Point)> = vec![];
 
         for point in &points {
-            let d =  Float::from(p.distance(&point));
+            let d = Float::from(p.distance(&point));
             if point != &p {
                 if prev == None {
                     vec.push((d, *point))
@@ -80,11 +86,11 @@ impl Shape {
         }
         vec.sort();
         vec.reverse();
-        
+
         // Get the closest point
         let key = match vec.get(vec.len() - 1) {
             Some(n) => n,
-            None => return None
+            None => return None,
         };
 
         // For every point in the vec; if this distance
@@ -98,7 +104,7 @@ impl Shape {
                 // removing the last point
                 let var = match map.get(&p) {
                     Some(n) => Some(n),
-                    None => None
+                    None => None,
                 };
                 match var {
                     Some(n) => {
@@ -106,20 +112,22 @@ impl Shape {
                             list.pop();
                             return Some(list.clone());
                         } else if list.len() - 1 == points.len() {
-                            return None
+                            return None;
                         }
-                    },
-                    None => ()
+                    }
+                    None => (),
                 }
 
                 // If the connections are full then return None
                 match map.get(&point.1) {
-                    Some(n) => if n.1 != None && n.0 != None {
-                        return None
-                    },
+                    Some(n) => {
+                        if n.1 != None && n.0 != None {
+                            return None;
+                        }
+                    }
                     None => (),
                 }
-                
+
                 // If the current point has one connection then
                 // add the closest distance point to its connections
                 // otherwise initialize
@@ -130,8 +138,10 @@ impl Shape {
                             Some(_) => Connection(n.0, Some(point.1)),
                         };
                         map.insert(p, v);
-                    },
-                    None => {map.insert(p, Connection(Some(point.1), None));},
+                    }
+                    None => {
+                        map.insert(p, Connection(Some(point.1), None));
+                    }
                 }
                 match map.get(&point.1) {
                     Some(n) => {
@@ -140,10 +150,11 @@ impl Shape {
                             Some(_) => Connection(n.0, Some(p)),
                         };
                         map.insert(point.1, v);
-                    },
-                    None => {map.insert(point.1, Connection(Some(p), None));},
+                    }
+                    None => {
+                        map.insert(point.1, Connection(Some(p), None));
+                    }
                 }
-        
 
                 // Add the closest point to the final list
                 // Remove the closest point from the remaining points
@@ -157,9 +168,9 @@ impl Shape {
         }
 
         // Default to returning nothing
-        return None
+        return None;
     }
-    
+
     // fn heavy_algo(&self) -> Option<Vec<Point>> {}
 }
 
@@ -213,43 +224,27 @@ mod tests {
     #[test]
     #[should_panic]
     fn light_algo_diamond() {
-        let v = vec![
-            Point(5, 0),
-            Point(0, 2),
-            Point(0, -2),
-            Point(-5, 0)
-        ];
+        let v = vec![Point(5, 0), Point(0, 2), Point(0, -2), Point(-5, 0)];
         let mut shape = Shape::new(HashMap::new(), vec![], v);
-
 
         match shape.calc() {
             Some(n) => n,
-            None => panic!("Nothing returned")
+            None => panic!("Nothing returned"),
         };
     }
 
     #[test]
     fn light_algo_equal_distance() {
-        let v = vec![
-            Point(0, -2),
-            Point(0, 2),
-            Point(1, -3),
-            Point(-3, 0),
-        ];
+        let v = vec![Point(0, -2), Point(0, 2), Point(1, -3), Point(-3, 0)];
         let mut shape = Shape::new(HashMap::new(), vec![], v);
-
 
         let shape = match shape.calc() {
             Some(n) => n,
-            None => panic!("Nothing returned")
+            None => panic!("Nothing returned"),
         };
 
-        assert_eq!(vec![
-            Point(-3, 0),
-            Point(0, 2),
-            Point(0, -2),
-            Point(1, -3),
-            ],
+        assert_eq!(
+            vec![Point(-3, 0), Point(0, 2), Point(0, -2), Point(1, -3),],
             shape
         );
     }
@@ -257,18 +252,12 @@ mod tests {
     #[test]
     #[should_panic]
     fn light_algo_consume_all_points() {
-        let v = vec![
-            Point(-7, 0),
-            Point(0, 2),
-            Point(1, 1),
-            Point(3, 0),
-        ];
+        let v = vec![Point(-7, 0), Point(0, 2), Point(1, 1), Point(3, 0)];
         let mut shape = Shape::new(HashMap::new(), vec![], v);
-
 
         match shape.calc() {
             Some(n) => n,
-            None => panic!("Nothing returned")
+            None => panic!("Nothing returned"),
         };
     }
     #[test]
@@ -286,22 +275,24 @@ mod tests {
         ];
         let mut shape = Shape::new(HashMap::new(), vec![], v);
 
-
         let shape = match shape.calc() {
             Some(n) => n,
-            None => panic!("Nothing returned")
+            None => panic!("Nothing returned"),
         };
 
-        assert_eq!(vec![
-            Point(0, 0),
-            Point(1, 0),
-            Point(3, 0),
-            Point(5, 0),
-            Point(6, -2),
-            Point(6, -5),
-            Point(3, -5),
-            Point(1, -3),
-            Point(0, -2),
-        ], shape)
+        assert_eq!(
+            vec![
+                Point(0, 0),
+                Point(1, 0),
+                Point(3, 0),
+                Point(5, 0),
+                Point(6, -2),
+                Point(6, -5),
+                Point(3, -5),
+                Point(1, -3),
+                Point(0, -2),
+            ],
+            shape
+        )
     }
 }
