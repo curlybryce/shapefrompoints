@@ -1,7 +1,12 @@
 use std::collections::HashMap;
 
+pub fn run(v: Vec<Point>) {
+    let mut x = Shape::new(HashMap::new(), vec![], v);
+    x.calc();
+}
+
 #[derive(PartialEq, Debug, Clone, Copy, Hash, Eq, PartialOrd, Ord)]
-pub struct Point(isize, isize);
+pub struct Point(pub isize, pub isize);
 impl Point {
     pub fn distance(&self, p: &Point) -> f32 {
         ((self.0 - p.0) as f32).hypot((self.1 - p.1) as f32)

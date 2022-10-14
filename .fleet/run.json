@@ -3,24 +3,30 @@
         {
             "type": "cargo",
             "name": "test",
-            "executableArgs": ["test"],
+            "cargoArgs": ["test"],
         },
         {
             "type": "cargo",
             "name": "fmt",
-            "executableArgs": ["fmt"],
+            "cargoArgs": ["fmt"],
         },
         {
             "type": "cargo",
             "name": "build",
-            "executableArgs": ["build"],
+            "cargoArgs": ["build"],
             "dependsOn": ["test"],
         },
         {
             "type": "cargo",
             "name": "run",
-            "executableArgs": ["run"],
+            "cargoArgs": ["run"],
             "dependsOn": ["build"],
+        },
+        {
+            "type": "cargo",
+            "name": "release",
+            "cargoArgs": ["build", "--release"],
+            "dependsOn": ["test"],
         },
     ]
 }
